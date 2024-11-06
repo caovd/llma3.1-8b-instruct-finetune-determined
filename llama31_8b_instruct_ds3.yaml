@@ -6,7 +6,7 @@ environment:
     - NCCL_DEBUG=INFO
     - HF_HOME=/hf_cache
     - NCCL_SOCKET_IFNAME=ens,eth,ib
-    - HF_TOKEN=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
+    - HF_TOKEN=<HuggingFace Token>
     - NCCL_BLOCKING_WAIT=0
 bind_mounts:
   - host_path: /nvmefs1/tmp/hf_cache
