@@ -1,0 +1,54 @@
+name: llama31_8b_instruct_ds3_customer_complaints
+debug: false
+environment:
+  image: determinedai/genai-train:latest
+  environment_variables:
+    - NCCL_DEBUG=INFO
+    - HF_HOME=/hf_cache
+    - NCCL_SOCKET_IFNAME=ens,eth,ib
+    - HF_TOKEN=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
+    - NCCL_BLOCKING_WAIT=0
+bind_mounts:
+  - host_path: /nvmefs1/tmp/hf_cache
+    container_path: /hf_cache
+resources:
+  slots_per_trial: 2
+  resource_pool: A100
+searcher:
+  name: single
+  max_length:
+    batches: 100
+  metric: eval_loss
+hyperparameters:
+  deepspeed_config: ds_configs/ds_config_stage_3.json
+  training_arguments:
+    learning_rate: 1e-5
+entrypoint: >-
+  python -m determined.launch.deepspeed
+  python run_clm.py
+  --model_name_or_path meta-llama/Llama-3.1-8B-Instruct
+  --dataset_name determined-ai/customers-complaints
+  --dataset_config_name default
+  --do_train
+  --do_eval
+  --use_lora
+  --torch_dtype float16
+  --max_steps 100  
+  --logging_strategy steps
+  --logging_steps 10
+  --output_dir /tmp/test-clm
+  --eval_steps 10
+  --evaluation_strategy steps
+  --save_total_limit 1
+  --seed 1337
+  --save_strategy steps
+  --save_steps 20
+  --deepspeed ds_configs/ds_config_stage_3.json
+  --per_device_train_batch_size 2
+  --per_device_eval_batch_size 2
+  --trust_remote_code false
+  --fp16
+  --use_auth_token True
+max_restarts: 0
+workspace: "Daniel"
+project: "llm"

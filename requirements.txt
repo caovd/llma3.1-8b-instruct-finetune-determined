@@ -1,0 +1,11 @@
+setuptools==59.5.0
+tokenizers>=0.13.3
+accelerate
+datasets
+evaluate
+peft
+transformers==4.43.1
+rouge_score
+fire
+sentencepiece
+scikit-learn
